@@ -186,12 +186,18 @@ export default function App() {
                   <div className="mt-4">
                     <div className="text-sm font-medium mb-1">Tokens</div>
                     <div className="space-y-1 text-sm text-slate-700">
-                      {r.tokens.map(t => (
-                        <div key={t.address} className="flex items-center justify-between">
-                          <span className="text-slate-600">{t.symbol || t.address[:6] + '…' + t.address[-4:]}</span>
-                          <span className="tabular-nums">{t.balance}</span>
-                        </div>
-                      ))}
+                      {r.tokens.map(t => {
+                        // Safely shorten an address when no symbol is available.  In
+                        // TypeScript/JavaScript you cannot slice with Python-like
+                        // syntax (e.g. addr[:6]); instead use String.prototype.slice().
+                        const shortAddr = `${t.address.slice(0, 6)}…${t.address.slice(-4)}`
+                        return (
+                          <div key={t.address} className="flex items-center justify-between">
+                            <span className="text-slate-600">{t.symbol || shortAddr}</span>
+                            <span className="tabular-nums">{t.balance}</span>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 )}
