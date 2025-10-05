@@ -12,7 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+          cache: 'npm'               # optional cache
+      - run: npm install             # ⟵ was `npm ci` (this was failing)
       - run: npm run build
         env:
           VITE_GH_PAGES_BASE: "/${{ github.event.repository.name }}/"
