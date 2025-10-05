@@ -1,23 +1,29 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 permissions:
   contents: write
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-        node-version: 20
-    # cache: 'npm'   <-- REMOVE this line if you have no package-lock.json
+          node-version: 20           # <-- must be nested under `with`
 
-      - run: npm install             # ⟵ was `npm ci` (this was failing)
+      - run: npm install             # not `npm ci` (since no lockfile)
+
       - run: npm run build
         env:
           VITE_GH_PAGES_BASE: "/${{ github.event.repository.name }}/"
+
+      # Optional but helpful if you ever add routing:
+      - run: cp dist/index.html dist/404.html
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
