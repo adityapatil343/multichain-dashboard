@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from 'react'
 import './index.css'
 import { CHAINS } from './chains'
@@ -149,11 +148,12 @@ export default function App() {
         <div className="mt-4 flex gap-2 items-center">
           <input className="input" placeholder="Optional: URL to tokenlist JSON (by chain key)" value={tokenListUrl} onChange={e => setTokenListUrl(e.target.value)} />
           <button className="btn" onClick={fetchTokensFromUrl}>Load Tokenlist</button>
-          <a className="btn" href="/example-tokenlist.json" target="_blank" rel="noreferrer">Example JSON</a>
+          {/* Use BASE_URL so the link works on GitHub Pages */}
+          <a className="btn" href={`${import.meta.env.BASE_URL}example-tokenlist.json`} target="_blank" rel="noreferrer">Example JSON</a>
         </div>
 
         <div className="grid mt-8 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {CHAINS.map((c, idx) => {
+          {CHAINS.map((c) => {
             const r = rows[c.key]
             return (
               <div key={c.key} className="card">
@@ -162,11 +162,11 @@ export default function App() {
                     <div className="text-lg font-medium">{c.name}</div>
                     <div className="text-xs text-slate-500">Native: {c.symbol}</div>
                   </div>
-                  {address && r.explorerUrl && (
-                    <a href={r.explorerUrl} target="_blank" rel="noreferrer" className="text-sm inline-flex items-center gap-1 hover:underline text-slate-600">
-                      <LinkIcon className="w-4 h-4" /> Explorer
-                    </a>
-                  )}
+                    {address && r.explorerUrl && (
+                      <a href={r.explorerUrl} target="_blank" rel="noreferrer" className="text-sm inline-flex items-center gap-1 hover:underline text-slate-600">
+                        <LinkIcon className="w-4 h-4" /> Explorer
+                      </a>
+                    )}
                 </div>
 
                 <div className="mt-4">
@@ -187,9 +187,8 @@ export default function App() {
                     <div className="text-sm font-medium mb-1">Tokens</div>
                     <div className="space-y-1 text-sm text-slate-700">
                       {r.tokens.map(t => {
-                        // Safely shorten an address when no symbol is available.  In
-                        // TypeScript/JavaScript you cannot slice with Python-like
-                        // syntax (e.g. addr[:6]); instead use String.prototype.slice().
+                        // Safely shorten an address when no symbol is available.
+                        // Use slice() instead of Python-like slicing.
                         const shortAddr = `${t.address.slice(0, 6)}…${t.address.slice(-4)}`
                         return (
                           <div key={t.address} className="flex items-center justify-between">
